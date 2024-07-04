@@ -49,6 +49,7 @@ public class UserControllerTest {
         CreateUserRequest request = new CreateUserRequest();
         request.setUsername("test");
         request.setPassword("testPassword");
+        request.setConfirmPassword("testPassword");
         final ResponseEntity<User> response = userController.createUser(request);
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
@@ -91,6 +92,28 @@ public class UserControllerTest {
         final ResponseEntity<User> response = userController.findById(1L);
         assertNotNull(response);
         assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void testCreateUserErrorPasswordTooShort() {
+        CreateUserRequest r = new CreateUserRequest();
+        r.setUsername("test");
+        r.setPassword("small");
+        r.setConfirmPassword("small");
+        final ResponseEntity<User> response = userController.createUser(r);
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void testCreateUserErrorPasswordConfirmDoesNotMatch() {
+        CreateUserRequest r = new CreateUserRequest();
+        r.setUsername("test");
+        r.setPassword("incorrect_password");
+        r.setConfirmPassword("password_incorrect");
+        final ResponseEntity<User> response = userController.createUser(r);
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
     }
 
 }
